@@ -25,6 +25,7 @@ int fileMenu()
     }
   } while (selection < 1 || selection > 3 || badInput);
   
+  
   return selection;
 }
 
@@ -44,26 +45,21 @@ int main()
     {
       cerr << "Error opening file" << endl; //cerr is a cout equivalent for errors
       exit(1);
+    else
+      cout << "Database loaded."
   case 2:
     readData.open("protein_c.fa");
     if (readData.fail())
     {
       cerr << "Error opening file" << endl; //cerr is a cout equivalent for errors
       exit(1);
+    else
+      cout << "Database loaded."
   default:
     return;
   }
 
-
-  string readData;
-  int count = 0;
-  //Read a file until you've reached the end
-  while (!readFile.eof()) {
-    
-  }
-
-  
-  readFile.close();
+  readData.close();
 
   return 0;
 }

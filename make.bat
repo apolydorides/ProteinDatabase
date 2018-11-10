@@ -1,1 +1,1 @@
-g++ file.cpp -o file.exe -std=c++11
+g++ readingProt.cpp -o readingProt.exe -std=c++11
