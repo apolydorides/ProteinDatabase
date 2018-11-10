@@ -1,0 +1,1 @@
+g++ file.cpp -o file.exe -std=c++11
