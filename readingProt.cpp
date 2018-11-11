@@ -1,11 +1,12 @@
+#include <algorithm>
+#include <bits/stdc++.h>
 #include <fstream>
-#include <stdio.h>
 #include <iostream>
-#include <vector>
+#include <sstream>
+#include <stdio.h>
 #include <string>
 #include <string.h>
-#include <sstream>
-#include <algorithm>
+#include <vector>
 
 using namespace std;
 
@@ -15,27 +16,27 @@ private:
   int id;
   string gi;
   string ref;
-  string name;
+  string descr;
   string sequence;
 
 public:
-  Protein(int id, string gi, string ref, string name, string sequence)
+  Protein(int id, string gi, string ref, string descr, string sequence)
   {
     this->id = id;
     this->gi = gi;
     this->ref = ref;
-    this->name = name;
+    this->descr = descr;
     this->sequence = sequence;
   };
 
   friend ostream &operator<<(ostream &os, Protein p){
-      return os << "item id: " << p.id << endl
-                << "gi id: " << p.gi << endl
-                << "ref id: " << p.ref << endl
-                << "name: " << p.name;
+      return os << "Item #: " << p.id << endl
+                << "GI #: " << p.gi << endl
+                << "Ref #: " << p.ref << endl
+                << "Description: " << p.descr;
   };
 
-  string get_id() {
+  int get_id() {
     return id;
   };
 
@@ -47,11 +48,24 @@ public:
     return ref;
   };
 
-  string get_descr
+  string get_descr() {
+    return descr;
+  };
 
+  bool keywordMatch(string str) {
+    if(descr.find(str) != string::npos) { //.find function returns npos when there is no match
+      return true;
+    }
+    return false;
+  }
+
+
+/*Tokenizing the proteins by finding the ">" character
+Then separating the first line using the "|" character
+Finally, values (gi, ref etc.) are added as a vector*/
 vector<Protein> initDB(string db)
 {
-  vector<Protein> vector;
+  vector<Protein> Proteins;
 
   ifstream data;
   data.open(db);
@@ -65,16 +79,16 @@ vector<Protein> initDB(string db)
     auto gi = protein.find("|", 3);
     auto ref = protein.find("|", gi + 5);
     auto name = protein.find("\n");
-    string sequence = protein.substr(name);
-    sequence.erase(remove(sequence.begin(), sequence.end(), '\n'), sequence.end());
+    string sequence = protein.substr(name); //no length variable as end of sequence is also end of data for each protein
+    sequence.erase(remove(sequence.begin(), sequence.end(), '\n'), sequence.end()); //removes the new-line characters within the sequence
     Protein p = Protein(
         id,
         protein.substr(3, gi - 3),
         protein.substr(gi + 5, ref - gi - 5),
         protein.substr(ref + 2, name - ref - 2),
         sequence);
-    vector.push_back(p);
-    id++;
+    Proteins.push_back(p); //adds protein with its details to vector
+    id++; //adds one to id counter (will be used to output total proteins at the end)
   }
   if (data.fail())
     {
@@ -83,38 +97,50 @@ vector<Protein> initDB(string db)
     }
   else
     cout << "Database loaded." << endl;
-  return vector;
+  return Proteins;
 }
 
-int fileMenu()
+void fileMenu(vector<Protein> &Proteins) //File-selection Menu
 {
-  do
-  {
-    int selection = 0;
-    bool badInput = false; //resets bad input
+  int selection = 0;
+  bool badInput = false;
+  while ((selection<1) || selection > 3 || badInput) {//will keep asking for user input until valid 
+                                                      //same error handling method used for all menus
+    badInput = false; //resets bad input boolean value
     cout << "Select an option from the menu below:"
          << "1) Load the abridged protein data"
          << "2) Load the completed protein data"
          << "3) Quit database" << endl;
     cin >> selection;
-    badInput = cin.fail();
+    badInput = cin.fail(); //cin.fail() evaluates to true if input type is not as expected
     if (badInput || selection < 1 || selection > 3)
     {
-      cin.clear();
+      cin.clear(); //clears user-input
       cin.ignore(10, '\n');
       cout << "Invalid input. Please enter a value between 1 and 3.";
     }
-  } while (selection < 1 || selection > 3 || badInput);
+  }
   
-  return selection;
+  switch (selection)
+  {
+  case 1:
+    vector<Protein> Proteins = initDB("protein_a.fa");
+    dbMenu(Proteins);
+  case 2:
+    vector<Protein> Proteins = initDB("protein_c.fa");
+    dbMenu(Proteins);
+  default:
+    cout << "Exiting database";
+    return; //since I am only allowing values 1,2,3 to be handled by the switch statement, default (i.e. 3) will exit the database
+  }
 }
 
-int dbMenu()
+void dbMenu(vector<Protein> &Proteins) //Database Menu
 {
-  do
-  {
-    int selection = 0;
-    bool badInput = false; //resets bad input
+  int selection = 0;
+  bool badInput = false;
+  while (selection < 1 || selection > 6 || badInput) {
+    badInput = false; //resets bad input
     cout << "Select an option from the menu below:"
          << "1) Overview of the database"
          << "2) Search by protein"
@@ -130,32 +156,67 @@ int dbMenu()
       cin.ignore(10, '\n');
       cout << "Invalid input. Please enter a value between 1 and 6.";
     }
-  } while (selection < 1 || selection > 3 || badInput);
+  } 
   
-  return selection;
+  int idSearch;
+  string search;
+  switch (selection) {
+    case 1:
+      cout << "The proteins in the database are from GenBank(R)."
+           << "Total number of proteins in this database: " //Add Proteins.size()?
+           << "Amino acids are represented by the following characters:"
+           << "A  alanine                P  proline"
+           << "B  aspartate/asparagine   Q  glutamine"
+           << "C  cystine                R  arginine"
+           << "D  aspartate              S  serine"
+           << "E  glutamate              T  threonine"
+           << "F  phenylalanine          U  selenocysteine"
+           << "G  glycine                V  valine"
+           << "H  histidine              W  tryptophan"
+           << "I  isoleucine             Y  tyrosine"
+           << "K  lysine                 Z  glutamate/glutamine"
+           << "L  leucine                X  any"
+           << "M  methionine             *  translation stop"
+           << "N  asparagine             -  gap of indeterminate length";
+    case 2:
+      cout << "Not available yet.";
+    case 3:
+      cout << "Not available yet.";
+    case 4:
+      cout << "Enter a reference number (part of reference number will give all possible matches)";
+      cin >> search;
+      for(Protein p : Proteins) {
+        if (p.get_ref()==search)  {
+          cout << p << endl;
+          //break; //since ref,gi,id are specific to 1 protein we break to reduce run-time
+        }
+        else
+        cout << "Your search yielded no results. Please check "
+      }
+    case 5:
+      cout << "Not available yet.";
+    default:
+      cout << "Not available yet.";
+  }
 }
 
-int main()
-{
+int main() {
   cout << "Welcome to the Protein Database" << endl;
 
-  int file = fileMenu();
-  switch (file)
-  {
-  case 1:
-    vector<Protein> Proteins = initDB("protein_a.fa");
-  case 2:
-    vector<Protein> Proteins = initDB("protein_c.fa");
-  default:
-    return;
-  }
+  fileMenu(&initDB);
 
-
-/* Keyword searches
-  for(Protein p : Proteins) {
+/*
+  for(Protein p : Protein) {
     if (p.get_ref()=="XP_005261862.1")  {
       cout << p << endl;
-      break;
+      break; //since ref,gi,id are specific to 1 protein we break to reduce run-time
+    }
+  }
+
+  int i = 0;
+  for(Protein p : Protein) {
+    if(p.keywordMatch("olf")) {
+      cout << ++i << ") " << p << endl;
     }
   }
 */
