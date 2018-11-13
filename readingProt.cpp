@@ -205,7 +205,6 @@ void dbMenu(vector<Protein> proteins) //Database Menu
     cin >> idSearch;
     for (Protein p : proteins)
     {
-      cout << p.get_id() << " " << idSearch;
       if (p.get_id() == idSearch)
       {
         cout << p << endl;
@@ -253,10 +252,22 @@ void dbMenu(vector<Protein> proteins) //Database Menu
     }
     break;
   case 5:
-    cout << "Not available yet.";
+    cout << "Enter a keyword to search for:" << endl;
+    cin >> search;
+    int i=0;
+    for(Protein p : Protein) {
+      if(p.keywordMatch(search)) {
+        cout << ++i << ") " << p << endl;
+      }
+    }
+    if (i == 0) {
+      cout << "Your search yielded no results. Please check your input is correct and try again." << endl;
+      dbMenu(proteins);
+    }
     break;
   default:
-    cout << "Not available yet.";
+    cout << "Exiting database";
+    exit(0); //since I am only allowing values 1-6 to be handled by the switch statement, default (i.e. 6) will exit the database
     break;
   }
 }
