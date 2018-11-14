@@ -139,7 +139,7 @@ void fileMenu() //File-selection Menu
     {
       cin.clear(); //clears user-input
       cin.ignore(10, '\n');
-      cout << "Invalid input. Please enter a value between 1 and 3.";
+      cout << endl << "Invalid input. Please enter a value between 1 and 3." << endl;
     }
   }
   vector<Protein> proteins;
@@ -310,9 +310,10 @@ void protMenu(Protein p) {
   }
 
   int counters[26] = {};
+  ofstream outFile;
   switch (selection) {
     case 1:
-      cout << p << endl;
+      cout << endl << p << endl;
       protMenu(p);
       break;
     case 2:
@@ -350,17 +351,19 @@ void protMenu(Protein p) {
       protMenu(p);
       break;
     case 4:
-      cout << "Not available yet.";
+      outFile.open("selected_proteins.txt", std::ios::app);
+      outFile << p << endl
+              << "Sequence is:" << endl
+              << p.get_sequence() << endl << endl;
+      outFile.close();
+      cout << endl << "Protein successfully written to file." << endl;
+      protMenu(p);
       break;
     default:
       cout << "Not available yet.";
       break;
   }
-
 }
-
-
-
 
 int main()
 {
