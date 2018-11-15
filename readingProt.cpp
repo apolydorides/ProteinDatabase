@@ -73,9 +73,10 @@ public:
 };
 
 
-int fileMenu();
-int dbMenu(vector<Protein> proteins);
-int protMenu(Protein p);
+void fileMenu();
+void dbMenu(vector<Protein> proteins);
+void protMenu(Protein p);
+int selection1, selection2, selection3;
 
 /*Tokenizing the proteins by finding the ">" character
 Then separating the first line using the "|" character
@@ -119,6 +120,9 @@ vector<Protein> initDB(string db)
   return proteins;
 }
 
+
+
+
 int main()
 {
   system("CLS");
@@ -131,9 +135,11 @@ int main()
 
 
 
-int fileMenu() //File-selection Menu
+
+
+void fileMenu() //File-selection Menu
 {
-  int selection1 = 0;
+  selection1 = 0;
   bool badInput = false;
   while ((selection1 < 1) || selection1 > 3 || badInput)
   {                   //will keep asking for user input until valid
@@ -169,14 +175,13 @@ int fileMenu() //File-selection Menu
     exit(0); //since I am only allowing values 1,2,3 to be handled by the switch statement, default (i.e. 3) will exit the database
     break;
   }
-  return selection1;
 }
 
 
 
-int dbMenu(vector<Protein> proteins) //Database Menu
-{
-  int selection2 = 0;
+void dbMenu(vector<Protein> proteins) //Database Menu
+{ 
+  selection2 = 0;
   bool badInput = false;
   while (selection2 < 1 || selection2 > 6 || badInput)
   {
@@ -318,11 +323,12 @@ int dbMenu(vector<Protein> proteins) //Database Menu
       }
       break;
     default:
-      cout << "Exiting database";
+      cout << endl << "Exiting database";
       exit(0); //since I am only allowing values 1-6 to be handled by the switch statement, default (i.e. 6) will exit the database
       break;
   }
-  return selection2;
+  selection2 = 0;
+  dbMenu(proteins);
 }
 
 
@@ -330,8 +336,8 @@ int dbMenu(vector<Protein> proteins) //Database Menu
 
 
 
-int protMenu(Protein p) {
-  int selection3 = 0;
+void protMenu(Protein p) {
+  selection3 = 0;
   bool badInput = false;
   while (selection3 < 1 || selection3 > 5 || badInput)
   {
@@ -404,8 +410,8 @@ int protMenu(Protein p) {
       protMenu(p);
       break;
     default:
-      cout << "Not available yet.";
+      cout << endl;
+      return;
       break;
   }
-  return selection3;
 }
