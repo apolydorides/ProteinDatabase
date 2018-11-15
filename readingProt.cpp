@@ -73,10 +73,9 @@ public:
 };
 
 
-void fileMenu();
-void dbMenu(vector<Protein> proteins);
-void protMenu(Protein p);
-
+int fileMenu();
+int dbMenu(vector<Protein> proteins);
+int protMenu(Protein p);
 
 /*Tokenizing the proteins by finding the ">" character
 Then separating the first line using the "|" character
@@ -120,11 +119,23 @@ vector<Protein> initDB(string db)
   return proteins;
 }
 
-void fileMenu() //File-selection Menu
+int main()
 {
-  int selection = 0;
+  system("CLS");
+  cout << endl << "Welcome to the Protein Database" << endl;
+
+  fileMenu();
+
+  return 0;
+}
+
+
+
+int fileMenu() //File-selection Menu
+{
+  int selection1 = 0;
   bool badInput = false;
-  while ((selection < 1) || selection > 3 || badInput)
+  while ((selection1 < 1) || selection1 > 3 || badInput)
   {                   //will keep asking for user input until valid
                       //same error handling method used for all menus
     badInput = false; //resets bad input boolean value
@@ -133,9 +144,9 @@ void fileMenu() //File-selection Menu
          << "1) Load the abridged protein data" << endl
          << "2) Load the completed protein data" << endl 
          << "3) Quit database" << endl ;
-    cin >> selection;
+    cin >> selection1;
     badInput = cin.fail(); //cin.fail() evaluates to true if input type is not as expected
-    if (badInput || selection < 1 || selection > 3)
+    if (badInput || selection1 < 1 || selection1 > 3)
     {
       cin.clear(); //clears user-input
       cin.ignore(10, '\n');
@@ -143,7 +154,7 @@ void fileMenu() //File-selection Menu
     }
   }
   vector<Protein> proteins;
-  switch (selection)
+  switch (selection1)
   {
   case 1:
     proteins = initDB("protein_a.fa");
@@ -158,13 +169,16 @@ void fileMenu() //File-selection Menu
     exit(0); //since I am only allowing values 1,2,3 to be handled by the switch statement, default (i.e. 3) will exit the database
     break;
   }
+  return selection1;
 }
 
-void dbMenu(vector<Protein> proteins) //Database Menu
+
+
+int dbMenu(vector<Protein> proteins) //Database Menu
 {
-  int selection = 0;
+  int selection2 = 0;
   bool badInput = false;
-  while (selection < 1 || selection > 6 || badInput)
+  while (selection2 < 1 || selection2 > 6 || badInput)
   {
     badInput = false; //resets bad input
     cout << endl
@@ -175,20 +189,21 @@ void dbMenu(vector<Protein> proteins) //Database Menu
          << "4) Search by ref #" << endl
          << "5) Search by keyword" << endl
          << "6) Quit database" << endl;
-    cin >> selection;
+    cin >> selection2;
     badInput = cin.fail();
-    if (badInput || selection < 1 || selection > 6)
+    if (badInput || selection2 < 1 || selection2 > 6)
     {
       cin.clear();
       cin.ignore(10, '\n');
-      cout << "Invalid input. Please enter a value between 1 and 6.";
+      cout << "Invalid input. Please enter a value between 1 and 6." << endl;
     }
   }
 
   int idSearch;
   string search;
+  int matchSelection=0;
   int i = 0;
-  switch (selection) {
+  switch (selection2) {
     case 1:
       cout << endl
           << "The proteins in the database are from GenBank(R)." << endl
@@ -270,12 +285,35 @@ void dbMenu(vector<Protein> proteins) //Database Menu
       cout << "Enter a keyword to search for:" << endl;
       cin >> search;
       for(Protein p : proteins) {
-        if(p.keywordMatch(search)) {
-          cout << ++i << ") " << p << endl << endl;
+          if(p.keywordMatch(search)) {
+            cout << ++i << ") " << endl << p << endl << endl;
+          }
+          else if (p.get_id()==proteins.size() && (i == 0)) {
+            cout << "Your search yielded no results. Please check your input is correct and try again." << endl;
+            dbMenu(proteins);
+          }
+      }
+      while (matchSelection < 1 || matchSelection > i || badInput) {
+        badInput = false; //resets bad input
+        cout << "Enter the number of the protein you wish to select: " << endl;
+        cin >> matchSelection;
+        badInput = cin.fail();
+        if (badInput || matchSelection < 1 || matchSelection > i) {
+          cin.clear();
+          cin.ignore(10, '\n');
+          cout << "Invalid input. Please enter a value between 1 and " << i << "." << endl;
         }
-        else if (p.get_id()==proteins.size() && (i == 0)) {
-          cout << "Your search yielded no results. Please check your input is correct and try again." << endl;
-          dbMenu(proteins);
+      }
+      i = 0;
+      for(Protein p : proteins) {
+        if(p.keywordMatch(search)) {
+            i++;
+            if ( i == matchSelection) {
+              cout << endl << "You selected:" << endl;
+              cout << p.get_descr() << endl;
+              protMenu(p);
+              break;
+            }
         }
       }
       break;
@@ -284,12 +322,18 @@ void dbMenu(vector<Protein> proteins) //Database Menu
       exit(0); //since I am only allowing values 1-6 to be handled by the switch statement, default (i.e. 6) will exit the database
       break;
   }
+  return selection2;
 }
 
-void protMenu(Protein p) {
-  int selection = 0;
+
+
+
+
+
+int protMenu(Protein p) {
+  int selection3 = 0;
   bool badInput = false;
-  while (selection < 1 || selection > 5 || badInput)
+  while (selection3 < 1 || selection3 > 5 || badInput)
   {
     badInput = false; //resets bad input
     cout << endl
@@ -299,19 +343,19 @@ void protMenu(Protein p) {
          << "3) Protein statistics" << endl
          << "4) Record protein to file" << endl
          << "5) Return to main menu" << endl;
-    cin >> selection;
+    cin >> selection3;
     badInput = cin.fail();
-    if (badInput || selection < 1 || selection > 5)
+    if (badInput || selection3 < 1 || selection3 > 5)
     {
       cin.clear();
       cin.ignore(10, '\n');
-      cout << "Invalid input. Please enter a value between 1 and 6.";
+      cout << "Invalid input. Please enter a value between 1 and 6." << endl;
     }
   }
 
   int counters[26] = {};
   ofstream outFile;
-  switch (selection) {
+  switch (selection3) {
     case 1:
       cout << endl << p << endl;
       protMenu(p);
@@ -363,14 +407,5 @@ void protMenu(Protein p) {
       cout << "Not available yet.";
       break;
   }
-}
-
-int main()
-{
-  system("CLS");
-  cout << endl << "Welcome to the Protein Database" << endl;
-
-  fileMenu();
-
-  return 0;
+  return selection3;
 }
