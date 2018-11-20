@@ -61,15 +61,6 @@ public:
   {
     return sequence;
   };
-
-  bool keywordMatch(string str)
-  {
-    if (descr.find(str) != string::npos)
-    { //.find function returns npos when there is no match
-      return true;
-    }
-    return false;
-  };
 };
 
 
@@ -123,15 +114,20 @@ vector<Protein> initDB(string db)
 
 
 
+
+
 int main()
 {
   system("CLS");
-  cout << endl << "Welcome to the Protein Database" << endl;
+  system("color A");
+  cout << endl << "WELCOME TO THE PROTEIN DATABASE" << endl;
 
   fileMenu();
 
   return 0;
 }
+
+
 
 
 
@@ -171,7 +167,8 @@ void fileMenu() //File-selection Menu
     dbMenu(proteins);
     break;
   default:
-    cout << "Exiting database";
+    cout << endl << "Exiting database..." << endl;
+    cout << "Thank you!" << endl;
     exit(0); //since I am only allowing values 1,2,3 to be handled by the switch statement, default (i.e. 3) will exit the database
     break;
   }
@@ -204,9 +201,13 @@ void dbMenu(vector<Protein> proteins) //Database Menu
     }
   }
 
+  //all variables used in the switch statement below declared here
+  //because no declaration can be made withing the case statements
   int idSearch;
   string search;
-  int matchSelection=0;
+  char keyword[100]=""; // this will allow user to input two words to refine search
+  string kSearch(keyword);
+  int matchSelection=0; // used for selecting the wanted keyword-match result
   int i = 0;
   switch (selection2) {
     case 1:
@@ -260,9 +261,10 @@ void dbMenu(vector<Protein> proteins) //Database Menu
           protMenu(p);
           break;
         }
-        else
+        else if (p.get_id() == proteins.size())
         {
           cout << "Your search yielded no results. Please check your input is correct and try again." << endl;
+          cout << search;
           dbMenu(proteins);
         }
       }
@@ -279,7 +281,7 @@ void dbMenu(vector<Protein> proteins) //Database Menu
           protMenu(p);
           break; //since ref,gi,id are specific to 1 protein we break to reduce run-time
         }
-        else
+        else if (p.get_id() == proteins.size())
         {
           cout << "Your search yielded no results. Please check your input is correct and try again." << endl;
           dbMenu(proteins);
@@ -287,13 +289,19 @@ void dbMenu(vector<Protein> proteins) //Database Menu
       }
       break;
     case 5:
+      cin.ignore();
+      cin.clear();
       cout << "Enter a keyword to search for:" << endl;
-      cin >> search;
+      cin.getline(keyword, sizeof keyword);
+      kSearch = keyword; // makes the char array above into string to use string functions with
+      cout << endl;
       for(Protein p : proteins) {
-          if(p.keywordMatch(search)) {
+          if((p.get_descr()).find(kSearch) != string::npos) 
+          {//find function returns npos when it does not match the two strings
             cout << ++i << ") " << endl << p << endl << endl;
           }
-          else if (p.get_id()==proteins.size() && (i == 0)) {
+          else if (p.get_id()==proteins.size() && (i == 0)) 
+          {
             cout << "Your search yielded no results. Please check your input is correct and try again." << endl;
             dbMenu(proteins);
           }
@@ -311,9 +319,9 @@ void dbMenu(vector<Protein> proteins) //Database Menu
       }
       i = 0;
       for(Protein p : proteins) {
-        if(p.keywordMatch(search)) {
+        if((p.get_descr()).find(kSearch) != string::npos) {
             i++;
-            if ( i == matchSelection) {
+            if (i == matchSelection) {
               cout << endl << "You selected:" << endl;
               cout << p.get_descr() << endl;
               protMenu(p);
@@ -323,7 +331,8 @@ void dbMenu(vector<Protein> proteins) //Database Menu
       }
       break;
     default:
-      cout << endl << "Exiting database";
+      cout << endl << "Exiting database..." << endl;
+      cout << "Thank you!" << endl;
       exit(0); //since I am only allowing values 1-6 to be handled by the switch statement, default (i.e. 6) will exit the database
       break;
   }
