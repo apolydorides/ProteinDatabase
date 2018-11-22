@@ -1,4 +1,11 @@
-#include <algorithm>
+/*
+Author: Andreas Polydorides
+CID: 01390230
+Project: Protein Database
+Due Date: 23/11/2018
+*/
+
+#include <algorithm>          //libraries required for various snippets of code below
 #include <bits/stdc++.h>
 #include <fstream>
 #include <iostream>
@@ -29,14 +36,16 @@ public:
     this->sequence = sequence;
   };
 
-  friend ostream &operator<<(ostream &os, Protein p)
-  {
+  //friend is used below as private values are used below
+  friend ostream &operator<<(ostream &os, Protein p) // Overloading the << operator when used in conjuction
+  {                                                  // with a class to print all the desired attributes
     return os << "Item #: " << p.id << endl
               << "GI #: " << p.gi << endl
               << "Ref #: " << p.ref << endl
               << "Description: " << p.descr;
   };
 
+  //functions below are used to return the private class attributes in other functions throughout the program
   int get_id()
   {
     return id;
@@ -63,11 +72,11 @@ public:
   };
 };
 
-
+//declaring the functions used within the program (found after int main)
+//declaring them was also needed as functions are called within other functions
 void fileMenu();
 void dbMenu(vector<Protein> proteins);
 void protMenu(Protein p);
-int selection1, selection2, selection3;
 
 /*Tokenizing the proteins by finding the ">" character
 Then separating the first line using the "|" character
@@ -135,7 +144,7 @@ int main()
 
 void fileMenu() //File-selection Menu
 {
-  selection1 = 0;
+  int selection1 = 0;
   bool badInput = false;
   while ((selection1 < 1) || selection1 > 3 || badInput)
   {                   //will keep asking for user input until valid
@@ -157,7 +166,7 @@ void fileMenu() //File-selection Menu
   }
   vector<Protein> proteins;
   switch (selection1)
-  {
+  {//depending on the selection creates a vector
   case 1:
     proteins = initDB("protein_a.fa");
     dbMenu(proteins);
@@ -178,7 +187,7 @@ void fileMenu() //File-selection Menu
 
 void dbMenu(vector<Protein> proteins) //Database Menu
 { 
-  selection2 = 0;
+  int selection2 = 0;
   bool badInput = false;
   while (selection2 < 1 || selection2 > 6 || badInput)
   {
@@ -264,7 +273,6 @@ void dbMenu(vector<Protein> proteins) //Database Menu
         else if (p.get_id() == proteins.size())
         {
           cout << "Your search yielded no results. Please check your input is correct and try again." << endl;
-          cout << search;
           dbMenu(proteins);
         }
       }
@@ -291,7 +299,7 @@ void dbMenu(vector<Protein> proteins) //Database Menu
     case 5:
       cin.ignore();
       cin.clear();
-      cout << "Enter a keyword to search for:" << endl;
+      cout << endl << "Enter a keyword to search for:" << endl;
       cin.getline(keyword, sizeof keyword);
       kSearch = keyword; // makes the char array above into string to use string functions with
       cout << endl;
@@ -346,7 +354,7 @@ void dbMenu(vector<Protein> proteins) //Database Menu
 
 
 void protMenu(Protein p) {
-  selection3 = 0;
+  int selection3 = 0;
   bool badInput = false;
   while (selection3 < 1 || selection3 > 5 || badInput)
   {
