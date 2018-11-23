@@ -37,8 +37,13 @@ public:
   };
 
   //friend is used below as private values are used below
+<<<<<<< HEAD
   friend ostream &operator<<(ostream &os, Protein p)  // Overloading the << operator when used in conjuction
   {                                                   // with a class to print all the desired attributes
+=======
+  friend ostream &operator<<(ostream &os, Protein p) // Overloading the << operator when used in conjuction
+  {                                                  // with a class to print all the desired attributes
+>>>>>>> 4b214366a852ecbcf0364f4b6825cfc36e2768b7
     return os << "Item #: " << p.id << endl
               << "GI #: " << p.gi << endl
               << "Ref #: " << p.ref << endl
@@ -180,7 +185,11 @@ void fileMenu() //File-selection Menu
   }
   vector<Protein> proteins;
   switch (selection1)
+<<<<<<< HEAD
   { //depending on the selection creates a vector
+=======
+  {//depending on the selection creates a vector
+>>>>>>> 4b214366a852ecbcf0364f4b6825cfc36e2768b7
   case 1:
     proteins = initDB("protein_a.fa");
     dbMenu(proteins);
@@ -287,7 +296,6 @@ void dbMenu(vector<Protein> proteins) //Database Menu
         else if (p.get_id() == proteins.size())
         {
           cout << "Your search yielded no results. Please check your input is correct and try again." << endl;
-          cout << search;
           dbMenu(proteins);
         }
       }
@@ -314,7 +322,11 @@ void dbMenu(vector<Protein> proteins) //Database Menu
     case 5:
       cin.ignore();
       cin.clear();
+<<<<<<< HEAD
       cout << endl << "Enter a keyword to search for: (enter more than 1 word to narrow down the results)" << endl;
+=======
+      cout << endl << "Enter a keyword to search for:" << endl;
+>>>>>>> 4b214366a852ecbcf0364f4b6825cfc36e2768b7
       cin.getline(keyword, sizeof keyword);
       kSearch = keyword; // makes the char array above into string to use string functions with
       cout << endl;
