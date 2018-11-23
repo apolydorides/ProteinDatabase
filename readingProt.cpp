@@ -23,31 +23,26 @@ private:
   int id;
   string gi;
   string ref;
-  string descr;
+  string name;
   string sequence;
 
 public:
-  Protein(int id, string gi, string ref, string descr, string sequence)
+  Protein(int id, string gi, string ref, string name, string sequence)
   {
     this->id = id;
     this->gi = gi;
     this->ref = ref;
-    this->descr = descr;
+    this->name = name;
     this->sequence = sequence;
   };
 
   //friend is used below as private values are used below
-<<<<<<< HEAD
-  friend ostream &operator<<(ostream &os, Protein p)  // Overloading the << operator when used in conjuction
-  {                                                   // with a class to print all the desired attributes
-=======
   friend ostream &operator<<(ostream &os, Protein p) // Overloading the << operator when used in conjuction
   {                                                  // with a class to print all the desired attributes
->>>>>>> 4b214366a852ecbcf0364f4b6825cfc36e2768b7
     return os << "Item #: " << p.id << endl
               << "GI #: " << p.gi << endl
               << "Ref #: " << p.ref << endl
-              << "Description: " << p.descr;
+              << "Name: " << p.name;
   };
 
   //functions below are used to return the private class attributes in other functions throughout the program
@@ -66,9 +61,9 @@ public:
     return ref;
   };
 
-  string get_descr()
+  string get_name()
   {
-    return descr;
+    return name;
   };
 
   string get_sequence()
@@ -185,11 +180,7 @@ void fileMenu() //File-selection Menu
   }
   vector<Protein> proteins;
   switch (selection1)
-<<<<<<< HEAD
   { //depending on the selection creates a vector
-=======
-  {//depending on the selection creates a vector
->>>>>>> 4b214366a852ecbcf0364f4b6825cfc36e2768b7
   case 1:
     proteins = initDB("protein_a.fa");
     dbMenu(proteins);
@@ -263,14 +254,14 @@ void dbMenu(vector<Protein> proteins) //Database Menu
       dbMenu(proteins);
       break;
     case 2:
-      cout << "Enter a protein number:" << endl;
+      cout << endl << "Enter a protein number:" << endl;
       cin >> idSearch;
       for (Protein p : proteins)
       {
         if (p.get_id() == idSearch)
         {
           cout << endl << "You selected:" << endl;
-          cout << p.get_descr() << endl;
+          cout << p.get_name() << endl;
           protMenu(p);
           break;
         }
@@ -282,14 +273,14 @@ void dbMenu(vector<Protein> proteins) //Database Menu
       }
       break;
     case 3:
-      cout << "Enter a GI number:" << endl;
+      cout << endl << "Enter a GI number:" << endl;
       cin >> search;
       for (Protein p : proteins)
       {
         if (p.get_gi() == search)
         {
           cout << endl << "You selected:" << endl;
-          cout << p.get_descr() << endl;
+          cout << p.get_name() << endl;
           protMenu(p);
           break;
         }
@@ -301,14 +292,14 @@ void dbMenu(vector<Protein> proteins) //Database Menu
       }
       break;
     case 4:
-      cout << "Enter a reference number:" << endl;
+      cout << endl << "Enter a reference number:" << endl;
       cin >> search;
       for (Protein p : proteins)
       {
         if (p.get_ref() == search)
         {
           cout << endl << "You selected:" << endl;
-          cout << p.get_descr() << endl;
+          cout << p.get_name() << endl;
           protMenu(p);
           break; //since ref,gi,id are specific to 1 protein we break to reduce run-time
         }
@@ -322,16 +313,12 @@ void dbMenu(vector<Protein> proteins) //Database Menu
     case 5:
       cin.ignore();
       cin.clear();
-<<<<<<< HEAD
       cout << endl << "Enter a keyword to search for: (enter more than 1 word to narrow down the results)" << endl;
-=======
-      cout << endl << "Enter a keyword to search for:" << endl;
->>>>>>> 4b214366a852ecbcf0364f4b6825cfc36e2768b7
       cin.getline(keyword, sizeof keyword);
       kSearch = keyword; // makes the char array above into string to use string functions with
       cout << endl;
       for(Protein p : proteins) {
-          if((p.get_descr()).find(kSearch) != string::npos) 
+          if((p.get_name()).find(kSearch) != string::npos) 
           {//find function returns npos when it does not match the two strings
             cout << ++i << ") " << endl << p << endl << endl;
           }
@@ -354,11 +341,11 @@ void dbMenu(vector<Protein> proteins) //Database Menu
       }
       i = 0;
       for(Protein p : proteins) {
-        if((p.get_descr()).find(kSearch) != string::npos) {
+        if((p.get_name()).find(kSearch) != string::npos) {
             i++;
             if (i == matchSelection) {
               cout << endl << "You selected:" << endl;
-              cout << p.get_descr() << endl;
+              cout << p.get_name() << endl;
               protMenu(p);
               break;
             }
@@ -407,7 +394,7 @@ void protMenu(Protein p) {
   ofstream outFile;
   switch (selection3) {
     case 1:
-      cout << endl << p << endl;
+      cout << endl << "Description of the protein:" << endl << p << endl;
       protMenu(p);
       break;
     case 2:
