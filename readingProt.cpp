@@ -1,4 +1,11 @@
-#include <algorithm>
+/*
+Author: Andreas Polydorides
+CID: 01390230
+Project: Protein Database
+Due Date: 23/11/2018
+*/
+
+#include <algorithm>          //libraries required for various snippets of code below
 #include <bits/stdc++.h>
 #include <fstream>
 #include <iostream>
@@ -29,14 +36,16 @@ public:
     this->sequence = sequence;
   };
 
-  friend ostream &operator<<(ostream &os, Protein p)
-  {
+  //friend is used below as private values are used below
+  friend ostream &operator<<(ostream &os, Protein p)  // Overloading the << operator when used in conjuction
+  {                                                   // with a class to print all the desired attributes
     return os << "Item #: " << p.id << endl
               << "GI #: " << p.gi << endl
               << "Ref #: " << p.ref << endl
               << "Description: " << p.descr;
   };
 
+  //functions below are used to return the private class attributes in other functions throughout the program
   int get_id()
   {
     return id;
@@ -63,11 +72,11 @@ public:
   };
 };
 
-
+//declaring the functions used within the program (found after int main)
+//declaring them was also needed as functions are called within other functions
 void fileMenu();
 void dbMenu(vector<Protein> proteins);
 void protMenu(Protein p);
-int selection1, selection2, selection3;
 
 /*Tokenizing the proteins by finding the ">" character
 Then separating the first line using the "|" character
@@ -122,11 +131,25 @@ int main()
   system("color A");
   cout << endl << "WELCOME TO THE PROTEIN DATABASE" << endl;
 
+  //Pre-existing selected_proteins.txt from a previous session is cleared
+  //Was not mentioned in specification but when asked, Dr. Choi suggested a clear file every time the program is run
+  ofstream clear;
+  clear.open("selected_proteins.txt", std::ofstream::out | std::ofstream::trunc); //truncate disregards previous contents
+  clear << "Selected proteins: " << endl << endl;
+  clear.close();
+
   fileMenu();
 
   return 0;
 }
 
+  /* Another iteration of clearing the text file
+  if( remove( "selected_proteins.txt" ) != 0 ) { //int func remove returns 0 when successfully removed the file
+    cerr << endl << "Error while clearing pre-existing saved protein information." << endl;
+    exit(0);
+  }
+  This would not work though if there was no file to begin with - i.e. first time program is run
+  */
 
 
 
@@ -135,7 +158,7 @@ int main()
 
 void fileMenu() //File-selection Menu
 {
-  selection1 = 0;
+  int selection1 = 0;
   bool badInput = false;
   while ((selection1 < 1) || selection1 > 3 || badInput)
   {                   //will keep asking for user input until valid
@@ -157,7 +180,7 @@ void fileMenu() //File-selection Menu
   }
   vector<Protein> proteins;
   switch (selection1)
-  {
+  { //depending on the selection creates a vector
   case 1:
     proteins = initDB("protein_a.fa");
     dbMenu(proteins);
@@ -178,7 +201,7 @@ void fileMenu() //File-selection Menu
 
 void dbMenu(vector<Protein> proteins) //Database Menu
 { 
-  selection2 = 0;
+  int selection2 = 0;
   bool badInput = false;
   while (selection2 < 1 || selection2 > 6 || badInput)
   {
@@ -291,7 +314,7 @@ void dbMenu(vector<Protein> proteins) //Database Menu
     case 5:
       cin.ignore();
       cin.clear();
-      cout << "Enter a keyword to search for:" << endl;
+      cout << endl << "Enter a keyword to search for: (enter more than 1 word to narrow down the results)" << endl;
       cin.getline(keyword, sizeof keyword);
       kSearch = keyword; // makes the char array above into string to use string functions with
       cout << endl;
@@ -346,7 +369,7 @@ void dbMenu(vector<Protein> proteins) //Database Menu
 
 
 void protMenu(Protein p) {
-  selection3 = 0;
+  int selection3 = 0;
   bool badInput = false;
   while (selection3 < 1 || selection3 > 5 || badInput)
   {
@@ -401,10 +424,10 @@ void protMenu(Protein p) {
       cout << endl << "Protein statistics:" << endl;
       for (int j = 0 ; j < 13 ; j++) {
         if (j < 9) { //for printing the two columns A-I and P-Y
-        cout << char(int('A')+j) << ((counters[j] > 9) ? "  " : "   ") << counters[j] << "    " << char(int('P')+j) << ((counters[j+13] > 9) ? "  " : "   ") << counters[j+13] << endl;
+        cout << "  " << char(int('A')+j) << ((counters[j] < 10) ? "   " : ((counters[j] < 100) ? "  " : " ")) << counters[j] << "    " << char(int('P')+j) << ((counters[j+13] < 10) ? "   " : ((counters[j+13] < 100) ? "  " : " ")) << counters[j+13] << endl;
         }
         else {//prints the remainders of the two columns
-        cout << char(int('A')+j+1) << ((counters[j] > 9) ? "  " : "   ") << counters[j] << "    " << ((j < 11) ? char(int('P')+j) : char(42+3*(j-11))) << ((counters[j+13] > 9) ? "  " : "   ") << counters[j+13] << endl;
+        cout << "  " << char(int('A')+j+1) << ((counters[j] < 10) ? "   " : ((counters[j] < 100) ? "  " : " ")) << counters[j] << "    " << ((j < 11) ? char(int('P')+j) : char(42+3*(j-11))) << ((counters[j+13] < 10) ? "   " : ((counters[j+13] < 100) ? "  " : " ")) << counters[j+13] << endl;
         }
       }
       protMenu(p);
